@@ -27,11 +27,15 @@ except: pass
 try: tms_id=params["tms_id"]
 except: pass
 
+try: rick = params.get("rick", "default")
+except: pass
 
 check_device_id()
 
-
 sony = SONY()
+
+# Check to see if we have gotten a auth token in last 15 minutes, if not renew the token
+#
 if mode < 998:
     if ADDON.getSetting(id='last_auth') != '':
         last_auth = stringToDate(ADDON.getSetting(id='last_auth'), "%Y-%m-%dT%H:%M:%S.%fZ")
@@ -39,6 +43,8 @@ if mode < 998:
     else:
         sony.check_auth()
 
+# If no target (mode) specified, make sure we have a profile to act on
+#
 if mode == None and mode < 998:
     if ADDON.getSetting(id='default_profile') == '' or ADDON.getSetting(id='always_ask_profile') == 'true': sony.get_profiles()
     main_menu()
